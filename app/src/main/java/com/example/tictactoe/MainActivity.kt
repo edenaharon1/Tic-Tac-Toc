@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.tictactoe.databinding.ActivityMainBinding
+import np.com.bimalkafle.tictactoeonline.GameModel
+import np.com.bimalkafle.tictactoeonline.GameStatus
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +25,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun createOfflineGame(){
+        GameData.saveGameModel(
+            GameModel(
+                gameStatus = GameStatus.JOINED
+            )
+        )
         startGame()
     }
 
