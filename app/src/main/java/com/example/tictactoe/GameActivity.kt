@@ -47,6 +47,7 @@ class GameActivity : AppCompatActivity() ,View.OnClickListener {
 
     fun setUI() {
         gameModel?.apply {
+            // עדכון הלחצנים לפי מצב הלוח
             binding.btn0.text = filledPos[0]
             binding.btn1.text = filledPos[1]
             binding.btn2.text = filledPos[2]
@@ -57,40 +58,45 @@ class GameActivity : AppCompatActivity() ,View.OnClickListener {
             binding.btn7.text = filledPos[7]
             binding.btn8.text = filledPos[8]
 
-            binding.startGameBtn.visibility = View.VISIBLE
-
-            binding.gameStatusText.text =
-                when(gameStatus){
-                    GameStatus.CREATED -> {
-                        binding.startGameBtn.visibility = View.INVISIBLE
-                        "Game ID :"+ gameId
-                    }
-                    GameStatus.JOINED ->{
-                        "Click on start game"
-                    }
-                    GameStatus.INPROGRESS ->{
-                        binding.startGameBtn.visibility = View.INVISIBLE
-                        currentPlayer + " turn"
-                    }
-                    GameStatus.FINISHED ->{
-                        if(winner.isNotEmpty()) winner + " Won"
-                        else "DRAW"
-                    }
+            // עדכון נראות וכיתוב של כפתור המשחק
+            when (gameStatus) {
+                GameStatus.CREATED -> {
+                    binding.startGameBtn.visibility = View.INVISIBLE
+                    binding.gameStatusText.text = "Game ID: $gameId"
                 }
-
+                GameStatus.JOINED -> {
+                    binding.startGameBtn.visibility = View.VISIBLE
+                    binding.startGameBtn.text = "Start Game"
+                    binding.gameStatusText.text = "Click on start game"
+                }
+                GameStatus.INPROGRESS -> {
+                    binding.startGameBtn.visibility = View.INVISIBLE
+                    binding.gameStatusText.text = "$currentPlayer's turn"
+                }
+                GameStatus.FINISHED -> {
+                    binding.startGameBtn.visibility = View.VISIBLE
+                    binding.startGameBtn.text = "Play Again" // שינוי טקסט לכפתור
+                    binding.gameStatusText.text = if (winner.isNotEmpty()) "$winner Won" else "DRAW"
+                }
+            }
         }
     }
 
+
     fun startGame() {
         gameModel?.apply {
+            // איפוס נתוני המשחק
             updateGameData(
                 GameModel(
                     gameId = gameId,
-                    gameStatus = GameStatus.INPROGRESS
+                    gameStatus = GameStatus.INPROGRESS,
+                    currentPlayer = "X", // להתחיל עם X
+                    filledPos = mutableListOf("", "", "", "", "", "", "", "", "")
                 )
             )
         }
     }
+
 
     fun updateGameData(model : GameModel){
         GameData.saveGameModel(model)
